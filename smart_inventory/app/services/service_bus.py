@@ -9,8 +9,8 @@ load_dotenv()
 CONN_STR = os.getenv("SERVICE_BUS_CONNECTION_STRING")
 
 # Queue names
-ORDERS_QUEUE = os.getenv("ORDERS_QUEUE_NAME", "orders-queue")
-CONFIRMATION_QUEUE = os.getenv("CONFIRMATION_QUEUE_NAME", "order-confirmation-queue")
+ORDERS_QUEUE = os.getenv()
+CONFIRMATION_QUEUE = os.getenv()
 
 
 def send_message(queue_name: str, message_data: dict):
@@ -26,3 +26,4 @@ def send_message(queue_name: str, message_data: dict):
 def publish_order_event(order_event: dict):
     """FastAPI /orders uses this to send order messages."""
     send_message(ORDERS_QUEUE, order_event)
+
