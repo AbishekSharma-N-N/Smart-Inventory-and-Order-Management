@@ -8,6 +8,6 @@
     "AZURE_STORAGE_CONNECTION_STRING":"",
     "azureFunctions.projectRuntime": "~4",
     "azureFunctions.preDeployTask": "func: pack",
-    "azureFunctions.functionAppName": "order-processor"
+    "azureFunctions.functionAppName": ""
   }
 }
