@@ -15,14 +15,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # OAuth2 password flow (used by /auth/login endpoint)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
-# ✅ Define user roles and credentials (static for now)
+# Define user roles and credentials (static for now)
 # You can replace this with DB-based users later.
 raw_users = {
     "admin": {"password": "admin123", "role": "admin"},
     "warehouse": {"password": "warehouse123", "role": "warehouse"}
 }
 
-# ✅ Hash passwords at runtime (avoids bcrypt import-time issues)
+# Hash passwords at runtime (avoids bcrypt import-time issues)
 fake_users_db = {
     username: {
         "username": username,
@@ -82,3 +82,4 @@ def require_role(*roles):
                 detail=f"Access denied: {roles} only."
             )
     return role_checker
+
