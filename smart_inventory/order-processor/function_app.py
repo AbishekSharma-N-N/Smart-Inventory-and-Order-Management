@@ -46,13 +46,13 @@ app = func.FunctionApp()
 # ===================================================================
 @app.service_bus_queue_trigger(
     arg_name="azservicebus",
-    queue_name="orders-queue",
+    queue_name="",
     connection="SERVICE_BUS_CONNECTION_STRING"
 )
 def process_order(azservicebus: func.ServiceBusMessage):
     """Handles new orders: updates inventory and marks order as reserved."""
     body = azservicebus.get_body().decode("utf-8")
-    logging.info("📦 Order message received: %s", body)
+    logging.info("Order message received: %s", body)
 
     try:
         order_event = json.loads(body)
@@ -75,13 +75,13 @@ def process_order(azservicebus: func.ServiceBusMessage):
                     """),
                     {"oid": order_id, "wid": warehouse_id}
                 )
-                logging.info(f"🆕 Inserted new order {order_id}")
+                logging.info(f"Inserted new order {order_id}")
             else:
                 conn.execute(
                     text("UPDATE orders SET status = 'reserved' WHERE order_id = :oid"),
                     {"oid": order_id}
                 )
-                logging.info(f"🔄 Updated existing order {order_id} to 'reserved'.")
+                logging.info(f"Updated existing order {order_id} to 'reserved'.")
 
             # Update inventory for each product
             for item in items:
@@ -110,13 +110,13 @@ def process_order(azservicebus: func.ServiceBusMessage):
                     }
                 )
 
-        logging.info(f"✅ Inventory updated and Order {order_id} set to 'reserved'")
+        logging.info(f"Inventory updated and Order {order_id} set to 'reserved'")
 
-        # ✅ After processing, trigger confirmation queue
+        # After processing, trigger confirmation queue
         send_to_confirmation_queue(order_id)
 
     except Exception as e:
-        logging.error(f"❌ Error in process_order: {str(e)}")
+        logging.error(f"Error in process_order: {str(e)}")
         raise
 
 
@@ -153,13 +153,13 @@ class InvoicePDF(FPDF):
 # ===================================================================
 @app.service_bus_queue_trigger(
     arg_name="azservicebus",
-    queue_name="order-confirmation-queue",
+    queue_name="",
     connection="SERVICE_BUS_CONNECTION_STRING"
 )
 def confirm_order(azservicebus: func.ServiceBusMessage):
     """Handles order confirmation: generates PDF and uploads invoice to Blob Storage."""
     body = azservicebus.get_body().decode("utf-8")
-    logging.info("✅ Order confirmation received: %s", body)
+    logging.info("Order confirmation received: %s", body)
 
     try:
         event = json.loads(body.replace("'", '"'))
@@ -173,7 +173,7 @@ def confirm_order(azservicebus: func.ServiceBusMessage):
             ).mappings().first()
 
             if not order:
-                logging.warning(f"⚠️ Order {order_id} not found, skipping invoice.")
+                logging.warning(f"Order {order_id} not found, skipping invoice.")
                 return
 
             conn.execute(
@@ -244,8 +244,9 @@ def confirm_order(azservicebus: func.ServiceBusMessage):
                 {"url": blob_url, "oid": order_id}
             )
 
-        logging.info(f"✅ Invoice generated & uploaded: {blob_url}")
+        logging.info(f"Invoice generated & uploaded: {blob_url}")
 
     except Exception as e:
-        logging.error(f"❌ Error in confirm_order: {str(e)}")
+        logging.error(f"Error in confirm_order: {str(e)}")
         raise
+
