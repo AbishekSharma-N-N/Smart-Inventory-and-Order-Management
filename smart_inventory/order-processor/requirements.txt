@@ -1,0 +1,35 @@
+# Uncomment to enable Azure Monitor OpenTelemetry
+# Ref: aka.ms/functions-azure-monitor-python
+# azure-monitor-opentelemetry
+
+azure-functions
+
+# Web framework (if running an HTTP-based FastAPI endpoint within the Function App)
+fastapi
+uvicorn[standard]
+
+# Database ORM + Drivers
+sqlalchemy
+pymysql
+certifi
+
+# PDF generation
+fpdf2
+
+# Environment management
+python-dotenv
+
+# Azure identity & secrets
+azure-identity
+azure-keyvault-secrets
+
+# Azure Storage and Messaging SDKs
+azure-storage-blob
+azure-servicebus
+
+# Observability / Telemetry (optional but recommended)
+opencensus-ext-azure
+
+# Uncomment to enable Azure Monitor OpenTelemetry integration
+# Ref: aka.ms/functions-azure-monitor-python
+# azure-monitor-opentelemetry
